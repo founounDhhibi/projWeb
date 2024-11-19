@@ -10,7 +10,7 @@ class Produits
     private DateTime $date_prod; // Utilisation de DateTime pour le type date
     private string $categorie_prod;
     private string $status_prod; // Enum : "available" ou "not available"
-    private string $image_prod;
+    private ?string $image_prod;
 
     public function __construct(
         ?int $id_prod,
@@ -18,17 +18,24 @@ class Produits
         ?string $description_prod,
         ?float $prix_prod,
         ?int $stock_prod,
-        ?DateTime $date_prod,
+        $date_prod, // Accept both DateTime and string
         ?string $categorie_prod,
         ?string $status_prod,
-        ? string $image_prod
+        ?string $image_prod
     ) {
         $this->id_prod = $id_prod;
         $this->nom_prod = $nom_prod;
         $this->description_prod = $description_prod;
         $this->prix_prod = $prix_prod;
         $this->stock_prod = $stock_prod;
-        $this->date_prod = $date_prod;
+    
+        // Convert date_prod to DateTime if it's a string
+        if (is_string($date_prod)) {
+            $this->date_prod = new DateTime($date_prod);
+        } else {
+            $this->date_prod = $date_prod;
+        }
+    
         $this->categorie_prod = $categorie_prod;
         $this->status_prod = $status_prod;
         $this->image_prod = $image_prod;
@@ -62,8 +69,9 @@ class Produits
 
     public function getDateProd(): string
     {
-        return $this->date_prod;
+        return $this->date_prod ? $this->date_prod->format('Y-m-d') : '';
     }
+    
 
     public function getCategorieProd(): string
     {

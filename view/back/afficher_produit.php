@@ -2,12 +2,7 @@
 include '../../controller/produitC.php';
 $travelOfferC = new ProduitC();
 $list = $travelOfferC->listeProduits();
-       // Redirige vers la liste des produits après ajout
-       header('Location: delete_produit.php');
-       exit; // Assurez-vous de quitter le script après la redirection
-   } else {
-       $error = "Informations manquantes";
-   }
+
 
 ?>
 
@@ -292,15 +287,11 @@ $list = $travelOfferC->listeProduits();
         </a>
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="forms-elements.html">
-              <i class="bi bi-circle"></i><span>add product/category</span>
+            <a href="ajouter_produit.php">
+              <i class="bi bi-circle"></i><span>add product</span>
             </a>
           </li>
-          <li>
-            <a href="forms-layouts.html">
-              <i class="bi bi-circle"></i><span>Form Layouts</span>
-            </a>
-          </li>
+   
           
         </ul>
       </li>
@@ -323,8 +314,8 @@ $list = $travelOfferC->listeProduits();
         </a>
         <ul id="tables-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
           <li>
-            <a href="tables-general.html" class="active">
-              <i class="bi bi-circle"></i><span>products and categories list</span>
+            <a href="ajouter_produit.php" class="active">
+              <i class="bi bi-circle"></i><span>products list</span>
             </a>
           </li>
         </ul>
@@ -397,21 +388,21 @@ foreach ($list as $produit) {
         <td >
             <form method="POST" action="update_Produit.php">
                 <input type="submit" name="update" class="btn btn-primary" value="update">
-                <input type="hidden" value="<?= $produit['id_prod']; ?>" name="id">
+                <input type="hidden" value="<?= $produit['id_prod']; ?>" name="id_prod">
             </form>
         </td>
         <td>
-            <form method="POST" action="delete_Produit.php">
-                <input type="submit" class="btn btn-primary" name="delete" value="delete">
-                <input type="hidden" value="<?= $produit['id_prod']; ?>" name="id">
-            </form>
-        </td>
+    <form method="POST" action="delete_produit.php">
+        <input type="hidden" value="<?php echo $produit['id_prod']; ?>" name="id_prod">
+        <input type="submit" class="btn btn-danger" name="delete" value="Supprimer">
+    </form>
+</td>
     </tr>
     <?php
 }
 ?>
 
-        
+      
               <h5 class="card-title">category table</h5>
               <p>Add <code>.table-bordered</code> for borders on all sides of the table and cells.</p>
               <!-- Bordered Table -->

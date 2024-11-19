@@ -1,20 +1,7 @@
 <?php
 
 include '../../controller/ProduitC.php';
-/*if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $data = [
-    'status' => 'success',
-    'message' => 'Data received successfully!',
-  
-  ];
-  header('Content-Type: application/json');
-  echo json_encode($data);
-  exit;
-  die();
-}*/
-
 $error = "";
-
 $produit = null;
 // Crée une instance du contrôleur
 $produitController = new ProduitC();
@@ -45,12 +32,12 @@ if (
         // Si le champ status_prod est vide, on lui attribue la valeur "Disponible"
         $status_prod = isset($_POST['status_prod']) ? $_POST['status_prod'] : "Disponible"; // Par défaut "Disponible"
 
-        // Vous pouvez obtenir la date du produit, par exemple, la date actuelle
-        $date_prod = date("Y-m-d"); // Format YYYY-MM-DD
+        
+        $date_prod = date("Y-m-d"); 
 
-        // Crée un nouvel objet Produit
+        
         $produit = new Produits(
-            0, // L'ID sera auto-incrémenté par la base de données
+            0, 
             $_POST['nom_prod'],
             $_POST['description_prod'],
             $_POST['prix_prod'],
@@ -61,7 +48,7 @@ if (
             $image_prod
         );
 
-        // Appel de la méthode pour ajouter le produit dans la base de données
+        
         $produitController->addProduit($produit);
 
         // Redirige vers la liste des produits après ajout
@@ -304,7 +291,7 @@ if (
         </a>
         <ul id="forms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
           <li>
-            <a href="ajouter_produit.html" class="active">
+            <a href="ajouter_produit.php" class="active">
               <i class="bi bi-circle"></i><span>add product/category</span>
             </a>
           </li>
@@ -356,21 +343,23 @@ if (
 
  
     <!--formulaiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiirrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrre-->
-    <form id="productForm" action="" method="POST" enctype="multipart/form-data">
+    <form id="ProductForm" action="" method="POST" enctype="multipart/form-data">
       <!-- Product Name -->
       <div class="row mb-3">
           <label for="productName" class="col-sm-2 col-form-label">Product Name</label>
           <div class="col-sm-10">
               <input type="text" class="form-control" id="productName" name="nom_prod" >
           </div>
+          <div id="productNameError"></div>
       </div>
 
       <!-- Number of Pieces -->
       <div class="row mb-3">
           <label for="productPieces" class="col-sm-2 col-form-label">Number of Pieces</label>
           <div class="col-sm-10">
-              <input type="number" class="form-control" id="productPieces" name="stock_prod" >
+              <input type="number" class="form-control" id="productStock" name="stock_prod" >
           </div>
+          <div id="productStockError"></div>
       </div>
 
       <!-- Date -->
@@ -379,6 +368,7 @@ if (
           <div class="col-sm-10">
               <input type="date" class="form-control" id="productDate" name="date_prod" >
           </div>
+          <div id="productDateError"></div>
       </div>
 
       <!-- Description -->
@@ -387,6 +377,7 @@ if (
           <div class="col-sm-10">
               <textarea class="form-control" style="height: 100px" id="productDescription" name="description_prod" ></textarea>
           </div>
+          <div id="productDescriptionError"></div>
       </div>
 
   <!-- Status -->
@@ -418,13 +409,13 @@ if (
                   $stmt->execute();
                   $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                   if (!empty($categories)) {
-                      echo '<select id="productCategory" name="categorie_prod" required>';
+                      echo '<select id="productCategory" name="categorie_prod">';
                       foreach ($categories as $row) {
                           echo '<option value="' . htmlspecialchars($row['id_categorie']) . '">' . htmlspecialchars($row['nom_categorie']) . '</option>';
                       }
                       echo '</select>';
                   } else {
-                      echo '<select id="productCategory" name="categorie_prod" required>';
+                      echo '<select id="productCategory" name="categorie_prod" >';
                       echo '<option value="">Aucune catégorie disponible</option>';
                       echo '</select>';
                   }
@@ -438,8 +429,9 @@ if (
       <!-- Price -->
       <div class="input-group mb-3">
           <span class="input-group-text">Price</span>
-          <input type="text" class="form-control" id="productPrice" name="prix_prod" aria-label="Amount (to the nearest dollar)" required>
+          <input type="text" class="form-control" id="productPrice" name="prix_prod" aria-label="Amount (to the nearest dollar)" >
           <span class="input-group-text">.00</span>
+          <div id="productPriceError"></div>
       </div>
 
       <!-- Product Image -->
@@ -453,7 +445,7 @@ if (
        <!-- Submit Button -->
        <div class="row mb-3">
           <div class="col-sm-10 offset-sm-2">
-              <button type="submit" class="btn btn-primary" action="">Submit</button>
+              <button type="submit" class="btn btn-primary" action=""  >Submit</button>
           </div>
       </div>
 
@@ -499,6 +491,7 @@ if (
     </section>
 
   </main><!-- End #main -->
+  
 
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
@@ -531,7 +524,7 @@ if (
   <script src="assets/js/main.js"></script>
   
   
-
+  <script src="js/ajouterProduit.js"></script>
 
 </body>
 

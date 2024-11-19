@@ -1,77 +1,89 @@
 <?php
-
 include '../../controller/ProduitC.php';
-/*if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $data = [
-    'status' => 'success',
-    'message' => 'Data received successfully!',
-  
-  ];
-  header('Content-Type: application/json');
-  echo json_encode($data);
-  exit;
-  die();
-}*/
 
-$error = "";
+$produitC = new ProduitC();
+$conn = getConnexion();
 
+$id_prod = null;
 $produit = null;
-// Crée une instance du contrôleur
-$produitController = new ProduitC();
+$error = "";
+$id_prod = $_POST['id_prod'];
 
-if (
-    isset($_POST["nom_prod"]) && $_POST["description_prod"] && $_POST["prix_prod"] && $_POST["stock_prod"] && $_POST["categorie_prod"]
-) {
-    if (
-        !empty($_POST["nom_prod"]) && !empty($_POST["description_prod"]) && !empty($_POST["prix_prod"]) && !empty($_POST["stock_prod"]) && !empty($_POST["categorie_prod"])
-    ) {
-        // Si l'image est téléchargée, traitons-la
-        $image_prod = null;
-        if (isset($_FILES['image_prod'])) {
-          // Vérifier s'il y a une erreur d'upload
-          if ($_FILES['image_prod']['error'] !== UPLOAD_ERR_OK) {
-              // Afficher le code d'erreur de l'upload
-              echo "Error uploading file: " . $_FILES['image_prod']['error'];
-              exit;
-          }
-          
-          // Si aucune erreur, traiter l'image
-          $image_prod = 'images' . basename($_FILES['image_prod']['name']);
-          move_uploaded_file($_FILES['image_prod']['tmp_name'], $image_prod);
-          echo "File uploaded successfully.";
-      }
-      
+// Vérifier si l'ID est un entier
+if (filter_var($id_prod, FILTER_VALIDATE_INT) === false) {
+    echo "<script>alert('L\'ID doit être un entier valide.');</script>";
+    // Rediriger après l'alerte pour éviter de continuer avec un ID invalide
+    header('update_produit.php');  // Remplacez par l'URL correcte de la page
+    exit(); // Arrêter l'exécution du script après la redirection
+} else {
+    // Requête pour vérifier si l'ID existe dans la base de données
+    $query = "SELECT COUNT(*) FROM produits WHERE id_prod = :id_prod";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':id_prod', $id_prod, PDO::PARAM_INT);
 
-        // Si le champ status_prod est vide, on lui attribue la valeur "Disponible"
-        $status_prod = isset($_POST['status_prod']) ? $_POST['status_prod'] : "Disponible"; // Par défaut "Disponible"
+    try {
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
 
-        // Vous pouvez obtenir la date du produit, par exemple, la date actuelle
-        $date_prod = date("Y-m-d"); // Format YYYY-MM-DD
-
-        // Crée un nouvel objet Produit
-        $produit = new Produits(
-            0, // L'ID sera auto-incrémenté par la base de données
-            $_POST['nom_prod'],
-            $_POST['description_prod'],
-            $_POST['prix_prod'],
-            $_POST['stock_prod'],
-            $date_prod,
-            $_POST['categorie_prod'],
-            $status_prod,
-            $image_prod
-        );
-
-        // Appel de la méthode pour ajouter le produit dans la base de données
-        $produitController->updateproduit($id_prod,$produit);
-
-        // Redirige vers la liste des produits après ajout
-        header('Location: afficher_produit.php');
-        exit; // Assurez-vous de quitter le script après la redirection
-    } else {
-        $error = "Informations manquantes";
+        if ($count == 0) {
+            echo "<script>alert('L\'ID n\'existe pas dans la base de données.');</script>";
+            // Rediriger après l'alerte pour empêcher la modification avec un ID erroné
+            header('Location: /update_produit.php');  // Assurez-vous que ce fichier existe à la racine du serveur
+            exit();
+            exit();
+        } else {
+            // L'ID existe, procédez aux actions nécessaires
+            echo "<script>alert('L\'ID existe. Vous pouvez continuer.');</script>";
+        }
+    } catch (PDOException $e) {
+        echo "Erreur lors de la vérification : " . htmlspecialchars($e->getMessage());
     }
 }
+
+
+
+// Vérifiez si l'ID a été transmis via POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['id_prod']) || isset($_POST['id'])) {
+        $id_prod = $_POST['id_prod'] ?? $_POST['id'];
+        // Vérifiez si l'ID existe dans la base de données
+        $produit = $produitC->getProduitById($id_prod, $conn);
+        if (!$produit) {
+            $error = "Product ID not found.";
+        }
+    }
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nom_prod'])) {
+// Validation des champs
+$status_prod = isset($_POST['status_prod']) ? $_POST['status_prod'] : 'available'; // Valeur par défaut : "available"
+$image_prod = !empty($_FILES['image_prod']['name']) ? $_FILES['image_prod']['name'] : $produitExistant['image_prod'] ?? '';
+
+// Instanciation de l'objet Produits
+$produit = new Produits(
+    $id_prod,
+    $_POST['nom_prod'],
+    $_POST['description_prod'],
+    (float) $_POST['prix_prod'],
+    (int) $_POST['stock_prod'],
+    $_POST['date_prod'],
+    $_POST['categorie_prod'],
+    $status_prod,
+    $image_prod
+);
+
+  $produitC->updateProduit($id_prod, $produit);
+
+  // Redirection après mise à jour
+  header('Location: afficher_produit.php');
+  exit;
+}
+
+
 ?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -79,7 +91,7 @@ if (
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>update products</title>
+  <title>update products and category</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -301,7 +313,7 @@ if (
         </a>
         <ul id="forms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
           <li>
-            <a href="ajouter_produit.html" class="active">
+            <a href="ajouter_produit.php" class="active">
               <i class="bi bi-circle"></i><span>add product/category</span>
             </a>
           </li>
@@ -340,127 +352,201 @@ if (
 
   <main id="main" class="main">
 
-    <div class="pagetitle">
-      <h1>update productwith Id = <?php echo $_POST['id_prod'] ?? 'No ID Provided'; ?></h1>
- 
+<div class="pagetitle">
+   
+<main id="main" class="main">
+
+<div class="pagetitle">
+   <?php if (!empty($id_prod)) : ?>
+    <!-- Si l'ID est défini et non vide -->
+    <h1>Update product with Id = <?php echo $id_prod; ?></h1>
+<?php else : ?>
+    <!-- Si l'ID est inconnu -->
+    <h1>Update Product</h1>
+    <form method="POST" action="">
+        <label for="id_prod">Enter the Product ID:</label>
+        <input type="text" id="id_prod" name="id_prod" >
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+<?php endif; ?>
+</div>
+
+</main>
+
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Elements</li>
+        </ol>
+      </nav>
     </div><!-- End Page Title -->
-    <?php
-    if (isset($_POST['id_prod'])) {
-        $produit = $produitC->showproduit($_POST['id_prod']);
-       
-    ?>
-
-    <!--formulaiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiirrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrre-->
-    <form id="productForm" action="" method="POST" enctype="multipart/form-data">
-      <!-- Product Name -->
-      <div class="row mb-3">
-          <label for="productName" class="col-sm-2 col-form-label">Product Name</label>
-          <div class="col-sm-10">
-              <input type="text" class="form-control" id="productName" name="productName" >
-          </div>
-      </div>
-
-      <!-- Number of Pieces -->
-      <div class="row mb-3">
-          <label for="productPieces" class="col-sm-2 col-form-label">Number of Pieces</label>
-          <div class="col-sm-10">
-              <input type="number" class="form-control" id="productPieces" name="productPieces" >
-          </div>
-      </div>
-
-      <!-- Date -->
-      <div class="row mb-3">
-          <label for="productDate" class="col-sm-2 col-form-label">Date</label>
-          <div class="col-sm-10">
-              <input type="date" class="form-control" id="productDate" name="productDate" >
-          </div>
-      </div>
-
-      <!-- Description -->
-      <div class="row mb-3">
-          <label for="productDescription" class="col-sm-2 col-form-label">Description</label>
-          <div class="col-sm-10">
-              <textarea class="form-control" style="height: 100px" id="productDescription" name="productDescription" ></textarea>
-          </div>
-      </div>
-
-  <!-- Status -->
-  <fieldset class="row mb-3">
-      <legend class="col-form-label col-sm-2 pt-0">Status</legend>
-      <div class="col-sm-10">
-          <div class="form-check">
-              <input class="form-check-input" type="radio" name="productStatus" id="available" value="available" checked>
-              <label class="form-check-label" for="available">Available</label>
-          </div>
-          <div class="form-check">
-              <input class="form-check-input" type="radio" name="productStatus" id="notAvailable" value="not available">
-              <label class="form-check-label" for="notAvailable">Not Available</label>
-          </div>
-      </div>
-  </fieldset>
-
-
-      <!-- Category -->
-      <div class="row mb-3">
-          <label for="productCategory" class="col-sm-2 col-form-label">Category</label>
-          <div class="col-sm-10">
-              <?php
-              include_once('../../config.php');
-              $conn = getConnexion();
-              $query = "SELECT id_categorie, nom_categorie FROM categorie";
-              try {
-                  $stmt = $conn->prepare($query);
-                  $stmt->execute();
-                  $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                  if (!empty($categories)) {
-                      echo '<select id="productCategory" name="productCategory" required>';
-                      foreach ($categories as $row) {
-                          echo '<option value="' . htmlspecialchars($row['id_categorie']) . '">' . htmlspecialchars($row['nom_categorie']) . '</option>';
-                      }
-                      echo '</select>';
-                  } else {
-                      echo '<select id="productCategory" name="productCategory" required>';
-                      echo '<option value="">Aucune catégorie disponible</option>';
-                      echo '</select>';
-                  }
-              } catch (PDOException $e) {
-                  echo "Erreur lors de la récupération des catégories : " . htmlspecialchars($e->getMessage());
-              }
-              ?>
-          </div>
-      </div>
-
-      <!-- Price -->
-      <div class="input-group mb-3">
-          <span class="input-group-text">Price</span>
-          <input type="text" class="form-control" id="productPrice" name="productPrice" aria-label="Amount (to the nearest dollar)" required>
-          <span class="input-group-text">.00</span>
-      </div>
-
-      <!-- Product Image -->
-      <div class="input-group mb-3">
-          <span class="input-group-text">Image</span>
-          <input type="file" class="form-control" id="productImage" name="productImage" accept="image">
-      </div>
-
-      <!-- Submit Button -->
-      
-       <!-- Submit Button -->
-       <div class="row mb-3">
-          <div class="col-sm-10 offset-sm-2">
-              <button type="submit" class="btn btn-primary" action="">Submit</button>
-          </div>
-      </div>
-
-  
-  </form>
-
 
  
-             
+    <!--formulaiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiirrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrre-->
+    <form id="ProductForm" action="" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="id_prod" value="<?= htmlspecialchars($produit['id_prod'] ?? '') ?>">
+
+    <!-- Nom du produit -->
+    <div class="row mb-3">
+        <label for="productName" class="col-sm-2 col-form-label">Nom du produit</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="productName" name="nom_prod" 
+                   value="<?= htmlspecialchars($produit['nom_prod'] ?? '') ?>">
+        </div>
+        <div id="productNameError"></div>
+    </div>
+
+    <!-- Description -->
+    <div class="row mb-3">
+        <label for="productDescription" class="col-sm-2 col-form-label">Description</label>
+        <div class="col-sm-10">
+            <textarea class="form-control" id="productDescription" name="description_prod"><?= htmlspecialchars($produit['description_prod'] ?? '') ?></textarea>
+        </div>
+        <div id="productDescriptionError"></div>
+    </div>
+
+    <!-- Prix -->
+    <div class="row mb-3">
+        <label for="productPrice" class="col-sm-2 col-form-label">Prix</label>
+        <div class="col-sm-10">
+            <input type="number" step="0.01" class="form-control" id="productPrice" name="prix_prod" 
+                   value="<?= htmlspecialchars($produit['prix_prod'] ?? '') ?>">
+        </div>
+        <div id="productPriceError"></div>
+    </div>
+
+    <!-- Stock -->
+    <div class="row mb-3">
+        <label for="productStock" class="col-sm-2 col-form-label">Stock</label>
+        <div class="col-sm-10">
+            <input type="number" class="form-control" id="productStock" name="stock_prod" 
+                   value="<?= htmlspecialchars($produit['stock_prod'] ?? '') ?>">
+        </div>
+        <div id="productStockError"></div>
+    </div>
+
+    <!-- Date -->
+    <div class="row mb-3">
+        <label for="productDate" class="col-sm-2 col-form-label">Date</label>
+        <div class="col-sm-10">
+            <input type="date" class="form-control" id="productDate" name="date_prod" 
+                   value="<?= htmlspecialchars($produit['date_prod'] ?? '') ?>">
+        </div>
+        <div id="productDateError"></div>
+    </div>
+
+    <!-- Status -->
+    <fieldset class="row mb-3">
+        <legend class="col-form-label col-sm-2 pt-0">Status</legend>
+        <div class="col-sm-10">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="status_prod" id="available" value="available" 
+                       <?= (isset($produit['status_prod']) && $produit['status_prod'] === 'available') ? 'checked' : '' ?>>
+                <label class="form-check-label" for="available">Available</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="status_prod" id="notAvailable" value="not available" 
+                       <?= (isset($produit['status_prod']) && $produit['status_prod'] === 'not available') ? 'checked' : '' ?>>
+                <label class="form-check-label" for="notAvailable">Not Available</label>
+            </div>
+        </div>
+    </fieldset>
+
+    <!-- Category -->
+    <div class="row mb-3">
+        <label for="productCategory" class="col-sm-2 col-form-label">Category</label>
+        <div class="col-sm-10">
+            <?php
+            include_once('../../config.php');
+            $conn = getConnexion();
+            $query = "SELECT id_categorie, nom_categorie FROM categorie";
+            try {
+                $stmt = $conn->prepare($query);
+                $stmt->execute();
+                $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                if (!empty($categories)) {
+                    echo '<select id="productCategory" class="form-control" name="categorie_prod">';
+                    foreach ($categories as $row) {
+                        $selected = (isset($produit['categorie_prod']) && $produit['categorie_prod'] == $row['id_categorie']) ? 'selected' : '';
+                        echo '<option value="' . htmlspecialchars($row['id_categorie']) . '" ' . $selected . '>' . htmlspecialchars($row['nom_categorie']) . '</option>';
+                    }
+                    echo '</select>';
+                } else {
+                    echo '<select id="productCategory" class="form-control" name="categorie_prod">';
+                    echo '<option value="">Aucune catégorie disponible</option>';
+                    echo '</select>';
+                }
+            } catch (PDOException $e) {
+                echo "Erreur lors de la récupération des catégories : " . htmlspecialchars($e->getMessage());
+            }
+            ?>
+        </div>
+    </div>
+
+    <!-- Image -->
+    <div class="row mb-3">
+        <label for="productImage" class="col-sm-2 col-form-label">Image</label>
+        <div class="col-sm-10">
+            <input type="file" class="form-control" id="productImage" name="image_prod">
+            <?php if (!empty($produit['image_prod'])) : ?>
+                <img src="<?= htmlspecialchars($produit['image_prod']) ?>" alt="Image du produit" class="img-thumbnail mt-2" style="max-width: 150px;">
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Bouton de soumission -->
+    <div class="row mb-3">
+        <div class="col-sm-10 offset-sm-2">
+            <button type="submit" class="btn btn-primary">Mettre à jour</button>
+        </div>
+    </div>
+</form>
+
+
   
+  
+
+
+        <div class="col-lg-6">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">add category</h5>
+
+              <!-- Advanced Form Elements -->
+              <form>
+                
+                <div class="row mb-3">
+                  <label for="inputText" class="col-sm-2 col-form-label">category name</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="inputPassword" class="col-sm-2 col-form-label">description</label>
+                  <div class="col-sm-10">
+                    <textarea class="form-control" style="height: 100px"></textarea>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Submit Button</label>
+                  <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary">Submit </button>
+                  </div>
+                </div>
+
+              </form><!-- End General Form Elements -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
 
   </main><!-- End #main -->
+  
 
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
@@ -493,7 +579,7 @@ if (
   <script src="assets/js/main.js"></script>
   
   
-
+  <script src="js/updateProduit.js"></script>
 
 </body>
 

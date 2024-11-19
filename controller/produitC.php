@@ -86,6 +86,22 @@ class ProduitC
             die('Error: ' . $e->getMessage());
         }
     }
+    //hethi lel update 
+ // Fonction pour récupérer le produit par ID
+function getProduitById($id_prod, $conn) {
+    try {
+        $query = "SELECT * FROM produits WHERE id_prod = :id_prod";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':id_prod', $id_prod, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        return null;
+    }
+}
+
+
+    
     function showProduit($id_produit)
     {
         $sql = "SELECT * from produits where id_prod = $id_produit";
