@@ -1,16 +1,43 @@
 <?php
+// Connexion à la base de données
 include '../../config.php';
 $conn = getConnexion();
 
-// Fetch products
-$sql = "SELECT nom_prod, prix_prod, image_prod, id_prod FROM produits";
+// Récupérer toutes les catégories depuis la base de données
+$sql = "SELECT id_categorie, nom_categorie FROM categorie";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 
-// Store the result
-$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Stocker le résultat des catégories
+$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Vérifier si une catégorie est sélectionnée et ajuster la requête pour filtrer les produits
+$category_id = isset($_GET['category']) ? $_GET['category'] : null;
+
+// Préparer la requête pour récupérer les produits
+$sql_prod = "SELECT p.nom_prod, p.prix_prod, p.image_prod, p.id_prod 
+             FROM produits p
+             LEFT JOIN categorie c ON p.categorie_prod = c.id_categorie";
+
+// Ajouter une condition pour filtrer par catégorie si une catégorie est sélectionnée
+if ($category_id) {
+    $sql_prod .= " WHERE p.categorie_prod = :category_id";
+}
+
+$stmt_prod = $conn->prepare($sql_prod);
+
+// Si une catégorie est sélectionnée, on lie la variable `category_id`
+if ($category_id) {
+    $stmt_prod->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+}
+
+$stmt_prod->execute();
+
+// Stocker le résultat des produits
+$products = $stmt_prod->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -297,14 +324,26 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h4>Categories</h4>
     </div>
     <ul class="sidebar-categories">
+        <!-- Lien pour tous les produits -->
         <li><a href="#">All Products</a></li>
-        <li><a href="#">Electronics</a></li>
-        <li><a href="#">Clothing</a></li>
-        <li><a href="#">Home Appliances</a></li>
-        <li><a href="#">Furniture</a></li>
-        <li><a href="#">Books</a></li>
-        <li><a href="#">Sports</a></li>
+
+        <?php
+        // Vérifiez si des catégories ont été récupérées
+        if (!empty($categories)) {
+            // Parcourez chaque catégorie et créez un lien pour chaque
+            foreach ($categories as $category) {
+                // Créez un lien dynamique qui pointe vers une page filtrée par catégorie
+                echo '<li><a href="products.php?category=' . htmlspecialchars($category['id_categorie']) . '">' . htmlspecialchars($category['nom_categorie']) . '</a></li>';
+            }
+        } else {
+            // Si aucune catégorie n'est disponible, afficher un message
+            echo '<li><a href="#">No categories available</a></li>';
+        }
+        ?>
     </ul>
+</div>
+<!-- Sidebar End -->
+
     
     <div class="sidebar-title">
         <h4>Price Range</h4>
