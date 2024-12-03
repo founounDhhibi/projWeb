@@ -1,562 +1,466 @@
 <?php
 
+session_start() ;
+
+if (isset($_SESSION["username"])) 
+{
+    if ($_SESSION["role_user"] == "USER_ROLE" )
+        header("location:../front/index.php") ;
+} else {
+    header("location:../front/index.php") ;
+}
+
 include_once '../../Controller/UtilisateurC.php';
 $utilisateurC = new UtilisateurC();
 $list = $utilisateurC->afficher_Utilisateur();
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
+
+
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Star Admin2 </title>
-    <!-- plugins:css -->
-    <link rel="stylesheet" href="vendors/feather/feather.css">
-    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
-    <link rel="stylesheet" href="vendors/typicons/typicons.css">
-    <link rel="stylesheet" href="vendors/simple-line-icons/css/simple-line-icons.css">
-    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <link rel="stylesheet" href="vendors/datatables.net-bs4/dataTables.bootstrap4.css">
-    <link rel="stylesheet" href="js/select.dataTables.min.css">
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <link rel="stylesheet" href="css/vertical-layout-light/style.css">
-    <!-- endinject -->
-    <link rel="shortcut icon" href="images/favicon.png" />
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>show products and categories</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
 </head>
+
 <body>
-<div class="container-scroller">
-    <div class="row p-0 m-0 proBanner" id="proBanner">
-        <div class="col-md-12 p-0 m-0">
-            <div class="card-body card-body-padding d-flex align-items-center justify-content-between">
-                <div class="ps-lg-1">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <p class="mb-0 font-weight-medium me-3 buy-now-text">Free 24/7 customer support, updates, and more with this template!</p>
-                        <a href="https://www.bootstrapdash.com/product/star-admin-pro/?utm_source=organic&utm_medium=banner&utm_campaign=buynow_demo" target="_blank" class="btn me-2 buy-now-btn border-0">Get Pro</a>
-                    </div>
+
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <img src="assets/img/logo.png" alt="">
+        <span class="d-none d-lg-block"> Artisanat Denden</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+    
+  <div class="search-bar">
+    <form class="search-form d-flex align-items-center" method="POST" action="">
+      <input type="text" name="query" class="form-control" placeholder="Rechercher un utilisateur" title="Entrez un nom, prénom ou email" required>
+      <button type="submit" class="btn btn-primary" title="Rechercher">
+        <i class="bi bi-search"></i>
+      </button>
+    </form>
+  </div>
+
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+        <li class="nav-item dropdown">
+
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-bell"></i>
+            <span class="badge bg-primary badge-number">4</span>
+          </a><!-- End Notification Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+            <li class="dropdown-header">
+              You have 4 new notifications
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-exclamation-circle text-warning"></i>
+              <div>
+                <h4>Lorem Ipsum</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>30 min. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-x-circle text-danger"></i>
+              <div>
+                <h4>Atque rerum nesciunt</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>1 hr. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-check-circle text-success"></i>
+              <div>
+                <h4>Sit rerum fuga</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>2 hrs. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-info-circle text-primary"></i>
+              <div>
+                <h4>Dicta reprehenderit</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>4 hrs. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li class="dropdown-footer">
+              <a href="#">Show all notifications</a>
+            </li>
+
+          </ul><!-- End Notification Dropdown Items -->
+
+        </li><!-- End Notification Nav -->
+
+        <li class="nav-item dropdown">
+
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-chat-left-text"></i>
+            <span class="badge bg-success badge-number">3</span>
+          </a><!-- End Messages Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+            <li class="dropdown-header">
+              You have 3 new messages
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="assets/img/messages-1.jpg" alt="" class="rounded-circle">
+                <div>
+                  <h4>Maria Hudson</h4>
+                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                  <p>4 hrs. ago</p>
                 </div>
-                <div class="d-flex align-items-center justify-content-between">
-                    <a href="https://www.bootstrapdash.com/product/star-admin-pro/"><i class="mdi mdi-home me-3 text-white"></i></a>
-                    <button id="bannerClose" class="btn border-0 p-0">
-                        <i class="mdi mdi-close text-white me-0"></i>
-                    </button>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="assets/img/messages-2.jpg" alt="" class="rounded-circle">
+                <div>
+                  <h4>Anna Nelson</h4>
+                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                  <p>6 hrs. ago</p>
                 </div>
-            </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="assets/img/messages-3.jpg" alt="" class="rounded-circle">
+                <div>
+                  <h4>David Muldon</h4>
+                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                  <p>8 hrs. ago</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="dropdown-footer">
+              <a href="#">Show all messages</a>
+            </li>
+
+          </ul><!-- End Messages Dropdown Items -->
+
+        </li><!-- End Messages Nav -->
+
+        <li class="nav-item dropdown pe-3">
+
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+          </a><!-- End Profile Iamge Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>Kevin Anderson</h6>
+              <span>Web Designer</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-gear"></i>
+                <span>Account Settings</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                <i class="bi bi-question-circle"></i>
+                <span>Need Help?</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="logout.php">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="index.html">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+      
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>add </span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="ajouterUtilisateur.php">
+              <i class="bi bi-circle"></i><span>add user</span>
+            </a>
+          </li>
+   
+          
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>update  </span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="modifierUtilisateur.php" class="active">
+              <i class="bi bi-circle"></i><span>update user</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Forms Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link " data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-layout-text-window-reverse"></i><span>user list</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="tables-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="utilisateurs.php" class="active">
+              <i class="bi bi-circle"></i><span>user list</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Tables Nav -->
+
+      
+      
+
+      
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>General Tables</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">list</li>
+          <li class="breadcrumb-item active">General</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+<!--formulaiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiirrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrre-->
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <h5 class="card-title">Utilisateurs</h5>
+
+            <!-- Users Table -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Prénom</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Téléphone</th>
+                        <th scope="col">Adresse</th>
+                        <th scope="col">Nom d'utilisateur</th>
+                        <th scope="col">Rôle</th>
+                        <th scope="col">Modifier</th>
+                        <th scope="col">Supprimer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Si une recherche est effectuée
+                    if (isset($_POST['query']) && !empty($_POST['query'])) {
+                        $searchQuery = htmlspecialchars($_POST['query']);
+                        $list = $utilisateurC->chercherUtilisateur($searchQuery);
+                    } else {
+                        $list = $utilisateurC->afficher_Utilisateur(); // Tous les utilisateurs
+                    }
+
+                    if (!empty($list)) {
+                        foreach ($list as $utilisateur) {
+                    ?>
+                            <tr>
+                                <td><?= htmlspecialchars($utilisateur['id_user']); ?></td>
+                                <td><?= htmlspecialchars($utilisateur['nom_user']); ?></td>
+                                <td><?= htmlspecialchars($utilisateur['prenom_user']); ?></td>
+                                <td><?= htmlspecialchars($utilisateur['email_user']); ?></td>
+                                <td><?= htmlspecialchars($utilisateur['tel_user']); ?></td>
+                                <td><?= htmlspecialchars($utilisateur['adresse_user']); ?></td>
+                                <td><?= htmlspecialchars($utilisateur['username']); ?></td>
+                                <td><?= htmlspecialchars($utilisateur['role_user']); ?></td>
+                                <td>
+                                    <form method="GET" action="modifierUtilisateur.php">
+                                        <input type="hidden" value="<?= htmlspecialchars($utilisateur['id_user']); ?>" name="id_user">
+                                        <input type="submit" name="update" class="btn btn-primary" value="Modifier">
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="GET" action="supprimerUtilisateur.php" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                                        <input type="hidden" value="<?= htmlspecialchars($utilisateur['id_user']); ?>" name="id_user">
+                                        <input type="submit" class="btn btn-danger" name="delete" value="Supprimer">
+                                    </form>
+                                </td>
+                            </tr>
+                    <?php
+                        }
+                    } else {
+                        echo '<tr><td colspan="10">Aucun utilisateur trouvé.</td></tr>';
+                    }
+                    ?>
+                </tbody>
+            </table>
         </div>
     </div>
-    <!-- partial:partials/_navbar.html -->
-    <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
-        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
-            <div class="me-3">
-                <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
-                    <span class="icon-menu"></span>
-                </button>
-            </div>
-            <div>
-                <a class="navbar-brand brand-logo" href="index.html">
-                    <img src="images/logo.svg" alt="logo" />
-                </a>
-                <a class="navbar-brand brand-logo-mini" href="index.html">
-                    <img src="images/logo-mini.svg" alt="logo" />
-                </a>
-            </div>
+</section>
+
+
+             
+
+            
+
+
         </div>
-        <div class="navbar-menu-wrapper d-flex align-items-top">
-            <ul class="navbar-nav">
-                <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
-                    <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">John Doe</span></h1>
-                    <h3 class="welcome-sub-text">Your performance summary this week </h3>
-                </li>
-            </ul>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown d-none d-lg-block">
-                    <a class="nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false"> Select Category </a>
-                    <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
-                        <a class="dropdown-item py-3" >
-                            <p class="mb-0 font-weight-medium float-left">Select category</p>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-item-content flex-grow py-2">
-                                <p class="preview-subject ellipsis font-weight-medium text-dark">Bootstrap Bundle </p>
-                                <p class="fw-light small-text mb-0">This is a Bundle featuring 16 unique dashboards</p>
-                            </div>
-                        </a>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-item-content flex-grow py-2">
-                                <p class="preview-subject ellipsis font-weight-medium text-dark">Angular Bundle</p>
-                                <p class="fw-light small-text mb-0">Everything you’ll ever need for your Angular projects</p>
-                            </div>
-                        </a>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-item-content flex-grow py-2">
-                                <p class="preview-subject ellipsis font-weight-medium text-dark">VUE Bundle</p>
-                                <p class="fw-light small-text mb-0">Bundle of 6 Premium Vue Admin Dashboard</p>
-                            </div>
-                        </a>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-item-content flex-grow py-2">
-                                <p class="preview-subject ellipsis font-weight-medium text-dark">React Bundle</p>
-                                <p class="fw-light small-text mb-0">Bundle of 8 Premium React Admin Dashboard</p>
-                            </div>
-                        </a>
-                    </div>
-                </li>
-                <li class="nav-item d-none d-lg-block">
-                    <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
-              <span class="input-group-addon input-group-prepend border-right">
-                <span class="icon-calendar input-group-text calendar-icon"></span>
-              </span>
-                        <input type="text" class="form-control">
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <form class="search-form" action="#">
-                        <i class="icon-search"></i>
-                        <input type="search" class="form-control" placeholder="Search Here" title="Search here">
-                    </form>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
-                        <i class="icon-mail icon-lg"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
-                        <a class="dropdown-item py-3 border-bottom">
-                            <p class="mb-0 font-weight-medium float-left">You have 4 new notifications </p>
-                            <span class="badge badge-pill badge-primary float-right">View all</span>
-                        </a>
-                        <a class="dropdown-item preview-item py-3">
-                            <div class="preview-thumbnail">
-                                <i class="mdi mdi-alert m-auto text-primary"></i>
-                            </div>
-                            <div class="preview-item-content">
-                                <h6 class="preview-subject fw-normal text-dark mb-1">Application Error</h6>
-                                <p class="fw-light small-text mb-0"> Just now </p>
-                            </div>
-                        </a>
-                        <a class="dropdown-item preview-item py-3">
-                            <div class="preview-thumbnail">
-                                <i class="mdi mdi-settings m-auto text-primary"></i>
-                            </div>
-                            <div class="preview-item-content">
-                                <h6 class="preview-subject fw-normal text-dark mb-1">Settings</h6>
-                                <p class="fw-light small-text mb-0"> Private message </p>
-                            </div>
-                        </a>
-                        <a class="dropdown-item preview-item py-3">
-                            <div class="preview-thumbnail">
-                                <i class="mdi mdi-airballoon m-auto text-primary"></i>
-                            </div>
-                            <div class="preview-item-content">
-                                <h6 class="preview-subject fw-normal text-dark mb-1">New user registration</h6>
-                                <p class="fw-light small-text mb-0"> 2 days ago </p>
-                            </div>
-                        </a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link count-indicator" id="countDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="icon-bell"></i>
-                        <span class="count"></span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="countDropdown">
-                        <a class="dropdown-item py-3">
-                            <p class="mb-0 font-weight-medium float-left">You have 7 unread mails </p>
-                            <span class="badge badge-pill badge-primary float-right">View all</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <img src="images/faces/face10.jpg" alt="image" class="img-sm profile-pic">
-                            </div>
-                            <div class="preview-item-content flex-grow py-2">
-                                <p class="preview-subject ellipsis font-weight-medium text-dark">Marian Garner </p>
-                                <p class="fw-light small-text mb-0"> The meeting is cancelled </p>
-                            </div>
-                        </a>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <img src="images/faces/face12.jpg" alt="image" class="img-sm profile-pic">
-                            </div>
-                            <div class="preview-item-content flex-grow py-2">
-                                <p class="preview-subject ellipsis font-weight-medium text-dark">David Grey </p>
-                                <p class="fw-light small-text mb-0"> The meeting is cancelled </p>
-                            </div>
-                        </a>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <img src="images/faces/face1.jpg" alt="image" class="img-sm profile-pic">
-                            </div>
-                            <div class="preview-item-content flex-grow py-2">
-                                <p class="preview-subject ellipsis font-weight-medium text-dark">Travis Jenkins </p>
-                                <p class="fw-light small-text mb-0"> The meeting is cancelled </p>
-                            </div>
-                        </a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown d-none d-lg-block user-dropdown">
-                    <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img class="img-xs rounded-circle" src="images/faces/face8.jpg" alt="Profile image"> </a>
-                    <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
-                        <div class="dropdown-header text-center">
-                            <img class="img-md rounded-circle" src="images/faces/face8.jpg" alt="Profile image">
-                            <p class="mb-1 mt-3 font-weight-semibold">Allen Moreno</p>
-                            <p class="fw-light text-muted mb-0">allenmoreno@gmail.com</p>
-                        </div>
-                        <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile <span class="badge badge-pill badge-danger">1</span></a>
-                        <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
-                        <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
-                        <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a>
-                        <a class="dropdown-item" href="logout.php" ><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Sign Out</a>
-                    </div>
-                </li>
-            </ul>
-            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
-                <span class="mdi mdi-menu"></span>
-            </button>
-        </div>
-    </nav>
-    <!-- partial -->
-    <div class="container-fluid page-body-wrapper">
-        <!-- partial:partials/_settings-panel.html -->
-        <div class="theme-setting-wrapper">
-            <div id="settings-trigger"><i class="ti-settings"></i></div>
-            <div id="theme-settings" class="settings-panel">
-                <i class="settings-close ti-close"></i>
-                <p class="settings-heading">SIDEBAR SKINS</p>
-                <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border me-3"></div>Light</div>
-                <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border me-3"></div>Dark</div>
-                <p class="settings-heading mt-2">HEADER SKINS</p>
-                <div class="color-tiles mx-0 px-4">
-                    <div class="tiles success"></div>
-                    <div class="tiles warning"></div>
-                    <div class="tiles danger"></div>
-                    <div class="tiles info"></div>
-                    <div class="tiles dark"></div>
-                    <div class="tiles default"></div>
-                </div>
-            </div>
-        </div>
-        <div id="right-sidebar" class="settings-panel">
-            <i class="settings-close ti-close"></i>
-            <ul class="nav nav-tabs border-top" id="setting-panel" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="todo-tab" data-bs-toggle="tab" href="#todo-section" role="tab" aria-controls="todo-section" aria-expanded="true">TO DO LIST</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="chats-tab" data-bs-toggle="tab" href="#chats-section" role="tab" aria-controls="chats-section">CHATS</a>
-                </li>
-            </ul>
-            <div class="tab-content" id="setting-content">
-                <div class="tab-pane fade show active scroll-wrapper" id="todo-section" role="tabpanel" aria-labelledby="todo-section">
-                    <div class="add-items d-flex px-3 mb-0">
-                        <form class="form w-100">
-                            <div class="form-group d-flex">
-                                <input type="text" class="form-control todo-list-input" placeholder="Add To-do">
-                                <button type="submit" class="add btn btn-primary todo-list-add-btn" id="add-task">Add</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="list-wrapper px-3">
-                        <ul class="d-flex flex-column-reverse todo-list">
-                            <li>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="checkbox" type="checkbox">
-                                        Team review meeting at 3.00 PM
-                                    </label>
-                                </div>
-                                <i class="remove ti-close"></i>
-                            </li>
-                            <li>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="checkbox" type="checkbox">
-                                        Prepare for presentation
-                                    </label>
-                                </div>
-                                <i class="remove ti-close"></i>
-                            </li>
-                            <li>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="checkbox" type="checkbox">
-                                        Resolve all the low priority tickets due today
-                                    </label>
-                                </div>
-                                <i class="remove ti-close"></i>
-                            </li>
-                            <li class="completed">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="checkbox" type="checkbox" checked>
-                                        Schedule meeting for next week
-                                    </label>
-                                </div>
-                                <i class="remove ti-close"></i>
-                            </li>
-                            <li class="completed">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="checkbox" type="checkbox" checked>
-                                        Project review
-                                    </label>
-                                </div>
-                                <i class="remove ti-close"></i>
-                            </li>
-                        </ul>
-                    </div>
-                    <h4 class="px-3 text-muted mt-5 fw-light mb-0">Events</h4>
-                    <div class="events pt-4 px-3">
-                        <div class="wrapper d-flex mb-2">
-                            <i class="ti-control-record text-primary me-2"></i>
-                            <span>Feb 11 2018</span>
-                        </div>
-                        <p class="mb-0 font-weight-thin text-gray">Creating component page build a js</p>
-                        <p class="text-gray mb-0">The total number of sessions</p>
-                    </div>
-                    <div class="events pt-4 px-3">
-                        <div class="wrapper d-flex mb-2">
-                            <i class="ti-control-record text-primary me-2"></i>
-                            <span>Feb 7 2018</span>
-                        </div>
-                        <p class="mb-0 font-weight-thin text-gray">Meeting with Alisa</p>
-                        <p class="text-gray mb-0 ">Call Sarah Graves</p>
-                    </div>
-                </div>
-                <!-- To do section tab ends -->
-                <div class="tab-pane fade" id="chats-section" role="tabpanel" aria-labelledby="chats-section">
-                    <div class="d-flex align-items-center justify-content-between border-bottom">
-                        <p class="settings-heading border-top-0 mb-3 pl-3 pt-0 border-bottom-0 pb-0">Friends</p>
-                        <small class="settings-heading border-top-0 mb-3 pt-0 border-bottom-0 pb-0 pr-3 fw-normal">See All</small>
-                    </div>
-                    <ul class="chat-list">
-                        <li class="list active">
-                            <div class="profile"><img src="images/faces/face1.jpg" alt="image"><span class="online"></span></div>
-                            <div class="info">
-                                <p>Thomas Douglas</p>
-                                <p>Available</p>
-                            </div>
-                            <small class="text-muted my-auto">19 min</small>
-                        </li>
-                        <li class="list">
-                            <div class="profile"><img src="images/faces/face2.jpg" alt="image"><span class="offline"></span></div>
-                            <div class="info">
-                                <div class="wrapper d-flex">
-                                    <p>Catherine</p>
-                                </div>
-                                <p>Away</p>
-                            </div>
-                            <div class="badge badge-success badge-pill my-auto mx-2">4</div>
-                            <small class="text-muted my-auto">23 min</small>
-                        </li>
-                        <li class="list">
-                            <div class="profile"><img src="images/faces/face3.jpg" alt="image"><span class="online"></span></div>
-                            <div class="info">
-                                <p>Daniel Russell</p>
-                                <p>Available</p>
-                            </div>
-                            <small class="text-muted my-auto">14 min</small>
-                        </li>
-                        <li class="list">
-                            <div class="profile"><img src="images/faces/face4.jpg" alt="image"><span class="offline"></span></div>
-                            <div class="info">
-                                <p>James Richardson</p>
-                                <p>Away</p>
-                            </div>
-                            <small class="text-muted my-auto">2 min</small>
-                        </li>
-                        <li class="list">
-                            <div class="profile"><img src="images/faces/face5.jpg" alt="image"><span class="online"></span></div>
-                            <div class="info">
-                                <p>Madeline Kennedy</p>
-                                <p>Available</p>
-                            </div>
-                            <small class="text-muted my-auto">5 min</small>
-                        </li>
-                        <li class="list">
-                            <div class="profile"><img src="images/faces/face6.jpg" alt="image"><span class="online"></span></div>
-                            <div class="info">
-                                <p>Sarah Graves</p>
-                                <p>Available</p>
-                            </div>
-                            <small class="text-muted my-auto">47 min</small>
-                        </li>
-                    </ul>
-                </div>
-                <!-- chat tab ends -->
-            </div>
-        </div>
-        <!-- partial -->
-        <!-- partial:partials/_sidebar.html -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="utilisateurs.php">
-                        <i class="mdi mdi-grid-large menu-icon"></i>
-                        <span class="menu-title">Utilisateurs</span>
-                    </a>
-                </li>
+      </div>
+    </section>
 
+  </main><!-- End #main -->
 
-
-
-
-
-            </ul>
-        </nav>
-        <!-- partial -->
-        <div class="main-panel">
-            <div class="content-wrapper">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="home-tab">
-                            <div class="d-sm-flex align-items-center justify-content-between border-bottom">
-
-                                <div>
-                                    <div class="btn-wrapper">
-                                        <a href="#" class="btn btn-otline-dark align-items-center"><i class="icon-share"></i> Share</a>
-                                        <a href="#" class="btn btn-otline-dark"><i class="icon-printer"></i> Print</a>
-                                        <a href="#" class="btn btn-primary text-white me-0"><i class="icon-download"></i> Export</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-content tab-content-basic">
-                                <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
-                                    <div class="row">
-                                        <div class="col-lg-8 d-flex flex-column">
-                                            <div class="row flex-grow">
-                                                <div class="col-12 grid-margin stretch-card">
-                                                    <div class="card card-rounded">
-                                                        <div class="card-body">
-                                                            <div class="d-sm-flex justify-content-between align-items-start">
-                                                                <div>
-                                                                    <h4 class="card-title card-title-dash">utilisateurs</h4>
-                                                                    <p class="card-subtitle card-subtitle-dash">vous avez 50+ utilisateurs</p>
-                                                                </div>
-                                                                <div>
-                                                                    <a href="ajouterUtilisateur.php"> <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>ajouter utilisateur</button></a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="table-responsive mt-1" style="width: 100%; overflow-x: auto;">
-    <table class="table select-table" style="width: 100%;">
-                                                                    <thead>
-                                                                    <tr>
-
-                                                                        <th>id</th>
-                                                                        <th>Nom</th>
-                                                                        <th>Prénom</th>
-                                                                        <th>Email</th>
-                                                                        <th>Téléphone</th>
-                                                                        <th>Adresse</th>
-                                                                        <th>Username</th>
-                                                                        <th>Mot de passe</th>
-                                                                        <th>Rôle</th>
-                                                                        <th>actions</th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    <?php
-                                                                    foreach ($list as $item) {
-                                                                        ?>
-                                                                        <tr>
-                                                                            <td>
-                                                                                <h4 class="card-title card-title-dash"><?php echo $item['id_user'] ?></h4>
-                                                                            </td>
-                                                                            <td>
-                                                                                <h4 class="card-title card-title-dash"><?php echo $item['nom_user'] ?></h4>
-                                                                            </td>
-                                                                            <td>
-                                                                                <h4 class="card-title card-title-dash"><?php echo $item['prenom_user'] ?></h4>
-                                                                            </td>
-                                                                            <td>
-                                                                                <h4 class="card-title card-title-dash"><?php echo $item['email_user'] ?></h4>
-                                                                            </td>
-                                                                            <td>
-                                                                                <h4 class="card-title card-title-dash"><?php echo $item['tel_user'] ?></h4>
-                                                                            </td>
-                                                                            <td>
-                                                                                <h4 class="card-title card-title-dash"><?php echo $item['adresse_user'] ?></h4>
-                                                                            </td>
-                                                                            <td>
-                                                                                <h4 class="card-title card-title-dash"><?php echo $item['username'] ?></h4>
-                                                                            </td>
-                                                                            <td>
-                                                                                <h4 class="card-title card-title-dash"><?php echo $item['password_user'] ?></h4>
-                                                                            </td>
-                                                                            <td>
-                                                                                <h4 class="card-title card-title-dash"><?php echo $item['role_user'] ?></h4>
-                                                                            </td>
-
-                                                                            <td>
-                                                                                <a href="supprimerUtilisateur.php?id=<?php echo $item['id_user'] ?>"> <i class="mdi mdi-delete">delete</i>  </a> <hr>
-                                                                                <a href="modifierUtilisateur.php?id=<?php echo $item['id_user'] ?>"> <i class="mdi mdi-account-edit"></i> edit </a>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <?php
-                                                                    }
-                                                                    ?>
-
-
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- content-wrapper ends -->
-            <!-- partial:partials/_footer.html -->
-            <footer class="footer">
-                <div class="d-sm-flex justify-content-center justify-content-sm-between">
-                    <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Premium <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap admin template</a> from BootstrapDash.</span>
-                    <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Copyright © 2021. All rights reserved.</span>
-                </div>
-            </footer>
-            <!-- partial -->
-        </div>
-        <!-- main-panel ends -->
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
     </div>
-    <!-- page-body-wrapper ends -->
-</div>
-<!-- container-scroller -->
+    <div class="credits">
+    
+      Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+    </div>
+  </footer><!-- End Footer -->
 
-<!-- plugins:js -->
-<script src="vendors/js/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- Plugin js for this page -->
-<script src="vendors/chart.js/Chart.min.js"></script>
-<script src="vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
-<script src="vendors/progressbar.js/progressbar.min.js"></script>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-<!-- End plugin js for this page -->
-<!-- inject:js -->
-<script src="js/off-canvas.js"></script>
-<script src="js/hoverable-collapse.js"></script>
-<script src="js/template.js"></script>
-<script src="js/settings.js"></script>
-<script src="js/todolist.js"></script>
-<!-- endinject -->
-<!-- Custom js for this page-->
-<script src="js/jquery.cookie.js" type="text/javascript"></script>
-<script src="js/dashboard.js"></script>
-<script src="js/Chart.roundedBarCharts.js"></script>
-<!-- End custom js for this page-->
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets/vendor/echarts/echarts.min.js"></script>
+  <script src="assets/vendor/quill/quill.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+
 </body>
 
 </html>
-

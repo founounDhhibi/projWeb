@@ -100,6 +100,23 @@
                 echo $th->getMessage();
             }
         }
+		public function chercherUtilisateur($searchQuery) {
+			$sql = "SELECT * FROM utilisateurs 
+					WHERE nom_user LIKE :search 
+					OR prenom_user LIKE :search 
+					OR email_user LIKE :search";
+			$db = config::getConnexion();
+			try {
+				$query = $db->prepare($sql);
+				$query->bindValue(':search', '%' . $searchQuery . '%', PDO::PARAM_STR);
+				$query->execute();
+				return $query->fetchAll(PDO::FETCH_ASSOC); // Retourne un tableau associatif
+			} catch (Exception $e) {
+				echo "Erreur : " . $e->getMessage();
+				return [];
+			}
+		}
+		
 
 
 

@@ -94,7 +94,6 @@ if (isset($_SESSION["username"]))
 								<div class="popup" id="usermenu">
 		      						<ul>
                                         <?php
-                                        session_start();
                                             if (isset($_SESSION['username'])) {
 
                                                 echo ' <li><a href="">'. $_SESSION['nom_prenom_user'].'</a></li>';

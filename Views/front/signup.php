@@ -1,6 +1,14 @@
 <?php
 include_once '../../Model/Utilisateur.php';
 include_once '../../Controller/UtilisateurC.php';
+session_start() ;
+if (isset($_SESSION["username"]))
+{
+    if ($_SESSION["role_user"] == "ADMIN_ROLE")
+        header("location:../back/utilisateurs.php") ;
+    else if ($_SESSION["role_user"] == "USER_ROLE")
+        header("location:index.php") ;
+}
 
 $utilisateurC = new UtilisateurC();
 
