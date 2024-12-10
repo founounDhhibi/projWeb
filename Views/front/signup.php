@@ -1,13 +1,18 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require '../../vendor/autoload.php'; // Inclure Composer autoload si vous utilisez Composer
 include_once '../../Model/Utilisateur.php';
 include_once '../../Controller/UtilisateurC.php';
-session_start() ;
-if (isset($_SESSION["username"]))
-{
-    if ($_SESSION["role_user"] == "ADMIN_ROLE")
-        header("location:../back/utilisateurs.php") ;
-    else if ($_SESSION["role_user"] == "USER_ROLE")
-        header("location:index.php") ;
+
+session_start();
+if (isset($_SESSION["username"])) {
+    if ($_SESSION["role_user"] == "ADMIN_ROLE") {
+        header("location:../back/utilisateurs.php");
+    } else if ($_SESSION["role_user"] == "USER_ROLE") {
+        header("location:index.php");
+    }
 }
 
 $utilisateurC = new UtilisateurC();
@@ -21,7 +26,6 @@ if (
     isset($_POST["username"]) &&
     isset($_POST["password_user"])
 ) {
-
     if (
         !empty($_POST["nom_user"]) &&
         !empty($_POST["prenom_user"]) &&
@@ -30,17 +34,18 @@ if (
         !empty($_POST["adresse_user"]) &&
         !empty($_POST["username"]) &&
         !empty($_POST["password_user"])
-    ){
-        $nom_user = $_POST['nom_user'] ;
-        $prenom_user = $_POST['prenom_user'] ;
-        $email_user = $_POST['email_user'] ;
-        $tel_user = $_POST['tel_user'] ;
-        $adresse_user = $_POST['adresse_user'] ;
-        $username = $_POST['username'] ;
-        $password_user = md5($_POST['password_user']) ;
+    ) {
+        $nom_user = $_POST['nom_user'];
+        $prenom_user = $_POST['prenom_user'];
+        $email_user = $_POST['email_user'];
+        $tel_user = $_POST['tel_user'];
+        $adresse_user = $_POST['adresse_user'];
+        $username = $_POST['username'];
+        $password_user = md5($_POST['password_user']);
         $role_user = 'USER_ROLE';
 
-        $utilisateur = new Utilisateur($nom_user,
+        $utilisateur = new Utilisateur(
+            $nom_user,
             $prenom_user,
             $email_user,
             $tel_user,
@@ -51,13 +56,49 @@ if (
         );
 
         $utilisateurC->ajouter_Utilisateur($utilisateur);
+
+        // Envoyer un e-mail de confirmation
+        $mail = new PHPMailer(true);
+        try {
+            // Paramètres du serveur
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com'; // Utilisez votre serveur SMTP
+            $mail->SMTPAuth = true;
+            $mail->Username = 'iheb.zaidi.med@gmail.com'; // Votre email SMTP
+            $mail->Password = 'zdmq jvrz jmku eynj'; // Votre mot de passe SMTP
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // STARTTLS pour le port 587
+            $mail->Port = 587;
+            
+
+            // Destinataires
+            $mail->setFrom('iheb.zaidi.med@gmail.com', 'Iheb');
+            $mail->addAddress($email_user, $prenom_user . ' ' . $nom_user);
+
+            // Contenu de l'e-mail
+            $mail->isHTML(true);
+            $mail->Subject = 'Bienvenue sur notre site!';
+            $mail->Body = "
+                <h1>Bienvenue, $prenom_user $nom_user!</h1>
+                <p>Merci de vous être inscrit sur notre site. Nous sommes ravis de vous accueillir.</p>
+                <p>Voici vos informations de connexion :</p>
+                <ul>
+                    <li>Nom d'utilisateur : $username</li>
+                    <li>E-mail : $email_user</li>
+                </ul>
+                <p>Nous espérons que vous apprécierez votre expérience chez nous.</p>
+                <p>Cordialement,<br>L'équipe</p>
+            ";
+            $mail->AltBody = 'Merci de vous être inscrit sur notre site. Nous sommes ravis de vous accueillir.';
+
+            $mail->send();
+        } catch (Exception $e) {
+            echo "L'e-mail n'a pas pu être envoyé. Erreur: {$mail->ErrorInfo}";
+        }
+
         header('Location: index.php');
     }
-
-
-
-
 }
+
 
 ?>
 <!DOCTYPE html>
@@ -78,7 +119,7 @@ if (
 <header>
     <div id="mySidenav" class="sidenav">
         <div class="freedelivery">
-            <img src="http://placehold.it/60x48" alt="Free Delivery on all orders over $100" width="60" height="48">
+            <img src="1.png" alt="Free Delivery on all orders over $100" width="60" height="48">
             <h3>FREE DELIVERY</h3>
             <p class="bolder">On All Orders Over $100</p>
         </div>
@@ -131,7 +172,7 @@ if (
             <ul id="topright">
                 <li>Order Direct on: 0123-456-789</li>
                 <li>&nbsp;|&nbsp;</li>
-                <li id="searchlink" class="searchlink withpopup"><a href="#" class="search"><img src="http://placehold.it/14x14" alt="Search" width="14" height="14"></a>
+                <li id="searchlink" class="searchlink withpopup"><a href="#" class="search"><img src="imag.png" alt="Search" width="14" height="14"></a>
                     <div class="popup" id="searchform">
                         <form id="search">
                             <input type="text" class="s" id="s" placeholder="Search...">
@@ -140,7 +181,7 @@ if (
                     </div>
                 </li>
                 <li>&nbsp;|&nbsp;</li>
-                <li id="userlink" class="userlogin withpopup"><a href="#"><img src="http://placehold.it/14x14" alt="User" width="14" height="14"></a>
+                <li id="userlink" class="userlogin withpopup"><a href="#"><img src="image.png" alt="User" width="14" height="14"></a>
                     <div class="popup" id="usermenu">
                         <ul>
                             <li><a href="#">Sign in</a></li>
@@ -165,20 +206,20 @@ if (
                     <div id="cartitems">
                         <span>&nbsp;3</span>
                     </div>
-                    <a href="#"><img src="http://placehold.it/30x30" alt="Cart" width="30" height="30">Cart</a>
+                    <a href="#"><img src="2.png" alt="Cart" width="30" height="30">Cart</a>
                 </div>
                 <div id="cartpopup">
                     <h3>YOUR SHOPPING CART</h3><span class="bolder">3 ITEMS</span>
                     <div class="cartitem">
-                        <img src="http://placehold.it/100x100" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Lounge Chair</a></p>
+                        <img src="logo.png" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Lounge Chair</a></p>
                         <p class="bolder">$1,199.00</p>
                     </div>
                     <div class="cartitem">
-                        <img src="http://placehold.it/100x100" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Mono Chair</a></p>
+                        <img src="logo.png" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Mono Chair</a></p>
                         <p class="bolder">$299.00</p>
                     </div>
                     <div class="cartitem">
-                        <img src="http://placehold.it/100x100" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Lounge Chair</a></p>
+                        <img src="logo.png" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Lounge Chair</a></p>
                         <p class="bolder">$899.00</p>
                     </div>
                     <p class="boldest">TOTAL IN YOUR CART &nbsp;<span class="bolder">&nbsp; $2397</span></p>

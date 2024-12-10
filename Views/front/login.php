@@ -63,7 +63,7 @@ if (isset($_POST['username']))
 <header>
     <div id="mySidenav" class="sidenav">
         <div class="freedelivery">
-            <img src="http://placehold.it/60x48" alt="Free Delivery on all orders over $100" width="60" height="48">
+            <img src="logo.png" alt="Free Delivery on all orders over $100" width="60" height="48">
             <h3>FREE DELIVERY</h3>
             <p class="bolder">On All Orders Over $100</p>
         </div>
@@ -116,7 +116,7 @@ if (isset($_POST['username']))
             <ul id="topright">
                 <li>Order Direct on: 0123-456-789</li>
                 <li>&nbsp;|&nbsp;</li>
-                <li id="searchlink" class="searchlink withpopup"><a href="#" class="search"><img src="http://placehold.it/14x14" alt="Search" width="14" height="14"></a>
+                <li id="searchlink" class="searchlink withpopup"><a href="#" class="search"><img src="imag.png" alt="Search" width="14" height="14"></a>
                     <div class="popup" id="searchform">
                         <form id="search">
                             <input type="text" class="s" id="s" placeholder="Search...">
@@ -125,7 +125,7 @@ if (isset($_POST['username']))
                     </div>
                 </li>
                 <li>&nbsp;|&nbsp;</li>
-                <li id="userlink" class="userlogin withpopup"><a href="#"><img src="http://placehold.it/14x14" alt="User" width="14" height="14"></a>
+                <li id="userlink" class="userlogin withpopup"><a href="#"><img src="image.png" alt="User" width="14" height="14"></a>
                     <div class="popup" id="usermenu">
                         <ul>
                             <li><a href="#">Sign in</a></li>
@@ -139,31 +139,31 @@ if (isset($_POST['username']))
         <div class="row pagehead">
             <div class="col-sm-2 col-xs-2">
                 <div id="nav-toggle">
-                    <a href="#"><img src="http://placehold.it/28x26" alt="Navigation toggler" width="28" height="26"></a><span>Menu</span>
+                    <a href="#"><img src="1.png" alt="Navigation toggler" width="28" height="26"></a><span>Menu</span>
                 </div>
             </div>
             <div class="col-sm-8 col-xs-8" id="logo">
-                <a href="index.php"><img src="http://placehold.it/252x47" alt="Shof Store Logo"></a>
+                <a href="index.php"><img src="logo.png" alt="Shof Store Logo"></a>
             </div>
             <div class="col-sm-1 col-sm-offset-1 col-xs-2">
                 <div id="cart">
                     <div id="cartitems">
                         <span>&nbsp;3</span>
                     </div>
-                    <a href="#"><img src="http://placehold.it/30x30" alt="Cart" width="30" height="30">Cart</a>
+                    <a href="#"><img src="2.png" alt="Cart" width="30" height="30">Cart</a>
                 </div>
                 <div id="cartpopup">
                     <h3>YOUR SHOPPING CART</h3><span class="bolder">3 ITEMS</span>
                     <div class="cartitem">
-                        <img src="http://placehold.it/100x100" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Lounge Chair</a></p>
+                        <img src="logo.png" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Lounge Chair</a></p>
                         <p class="bolder">$1,199.00</p>
                     </div>
                     <div class="cartitem">
-                        <img src="http://placehold.it/100x100" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Mono Chair</a></p>
+                        <img src="logo.png" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Mono Chair</a></p>
                         <p class="bolder">$299.00</p>
                     </div>
                     <div class="cartitem">
-                        <img src="http://placehold.it/100x100" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Lounge Chair</a></p>
+                        <img src="logo.png" width="100" height="100" alt="Cart Item 1"><p class="boldest"><a href="#">&times;&nbsp;</a><a href="#">Cleon Lounge Chair</a></p>
                         <p class="bolder">$899.00</p>
                     </div>
                     <p class="boldest">TOTAL IN YOUR CART &nbsp;<span class="bolder">&nbsp; $2397</span></p>

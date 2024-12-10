@@ -545,7 +545,7 @@ ul#topright > li{
 header .jumbotron{
 	height:400px;
 	text-align: center;
-	background-image: url("http://placehold.it/1912x768");
+	background-image: url("logo.png");
 }
 
 header .jumbotron .container{
@@ -666,7 +666,7 @@ h2.num{
 
 
 .jumbotron.latest.centered{
-	background-image:url("http://placehold.it/1920x600");
+	background-image:url("logo.png");
 	margin-bottom: 100px;
 	background-size: 100% 100%;
 	padding:0;
@@ -1931,7 +1931,7 @@ footer > .container > div.row:first-child a:hover{
 }
 
 footer > .container > div.row:nth-child(2){
-	background-image:url("http://placehold.it/1250x317");
+	background-image:url("logo.png");
 }
 
 #subscribe-form{
