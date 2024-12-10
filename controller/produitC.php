@@ -116,5 +116,55 @@ function getProduitById($id_prod, $conn) {
             die('Error: ' . $e->getMessage());
         }
     }
+    public function listeProduitsPaginated($start, $limit) {
+        $sql = "SELECT * FROM produits LIMIT :start, :limit";
+        $db = getConnexion();
+        try {
+            $query = $db->prepare($sql);
+            $query->bindValue(':start', (int)$start, PDO::PARAM_INT);
+            $query->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            die("Error: " . $e->getMessage());
+        }
+    }
+    
+    public function countProduits() {
+        $sql = "SELECT COUNT(*) as total FROM produits";
+        $db = getConnexion();
+        try {
+            $query = $db->query($sql);
+            $result = $query->fetch();
+            return $result['total'];
+        } catch (PDOException $e) {
+            die("Error: " . $e->getMessage());
+        }
+    }
+    public function getTop5RatedProducts() {
+        $db = getConnexion();
+    
+        $sql = "
+            SELECT 
+                p.nom_prod,
+                AVG(r.rating) AS avg_rating
+            FROM produits p
+            INNER JOIN ratings r ON p.id_prod = r.product_id
+            GROUP BY p.id_prod
+            ORDER BY avg_rating DESC
+            LIMIT 5
+        ";
+    
+        try {
+            $query = $db->prepare($sql);
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die('Erreur: ' . $e->getMessage());
+        }
+    }
+    
+    
 }
+
 ?>

@@ -3,80 +3,82 @@ include '../../controller/ProduitC.php';
 
 $produitC = new ProduitC();
 $conn = getConnexion();
+if (isset($_GET['id_prod'])) {
+  $id_prod = $_GET['id'];
 
-$id_prod = null;
-$produit = null;
-$error = "";
-$id_prod = $_POST['id_prod'];
-
-// Vérifier si l'ID est un entier
-if (filter_var($id_prod, FILTER_VALIDATE_INT) === false) {
-    echo "<script>alert('L\'ID doit être un entier valide.');</script>";
-    // Rediriger après l'alerte pour éviter de continuer avec un ID invalide
-    header('update_produit.php');  // Remplacez par l'URL correcte de la page
-    exit(); // Arrêter l'exécution du script après la redirection
-} else {
-    // Requête pour vérifier si l'ID existe dans la base de données
-    $query = "SELECT COUNT(*) FROM produits WHERE id_prod = :id_prod";
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(':id_prod', $id_prod, PDO::PARAM_INT);
-
-    try {
-        $stmt->execute();
-        $count = $stmt->fetchColumn();
-
-        if ($count == 0) {
-            echo "<script>alert('L\'ID n\'existe pas dans la base de données.');</script>";
-            // Rediriger après l'alerte pour empêcher la modification avec un ID erroné
-            header('Location: /update_produit.php');  // Assurez-vous que ce fichier existe à la racine du serveur
-            exit();
-            exit();
-        } else {
-            // L'ID existe, procédez aux actions nécessaires
-            echo "<script>alert('L\'ID existe. Vous pouvez continuer.');</script>";
-        }
-    } catch (PDOException $e) {
-        echo "Erreur lors de la vérification : " . htmlspecialchars($e->getMessage());
-    }
-}
+  $produit = null;
+  $error = "";
 
 
+  // Vérifier si l'ID est un entier
+  if (filter_var($id_prod, FILTER_VALIDATE_INT) === false) {
+      echo "<script>alert('L\'ID doit être un entier valide.');</script>";
+      // Rediriger après l'alerte pour éviter de continuer avec un ID invalide
+      header('update_produit.php');  // Remplacez par l'URL correcte de la page
+      exit(); // Arrêter l'exécution du script après la redirection
+  } else {
+      // Requête pour vérifier si l'ID existe dans la base de données
+      $query = "SELECT COUNT(*) FROM produits WHERE id_prod = :id_prod";
+      $stmt = $conn->prepare($query);
+      $stmt->bindParam(':id_prod', $id_prod, PDO::PARAM_INT);
 
-// Vérifiez si l'ID a été transmis via POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['id_prod']) || isset($_POST['id'])) {
-        $id_prod = $_POST['id_prod'] ?? $_POST['id'];
-        // Vérifiez si l'ID existe dans la base de données
-        $produit = $produitC->getProduitById($id_prod, $conn);
-        if (!$produit) {
-            $error = "Product ID not found.";
-        }
-    }
-}
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nom_prod'])) {
-// Validation des champs
-$status_prod = isset($_POST['status_prod']) ? $_POST['status_prod'] : 'available'; // Valeur par défaut : "available"
-$image_prod = !empty($_FILES['image_prod']['name']) ? $_FILES['image_prod']['name'] : $produitExistant['image_prod'] ?? '';
+      try {
+          $stmt->execute();
+          $count = $stmt->fetchColumn();
 
-// Instanciation de l'objet Produits
-$produit = new Produits(
-    $id_prod,
-    $_POST['nom_prod'],
-    $_POST['description_prod'],
-    (float) $_POST['prix_prod'],
-    (int) $_POST['stock_prod'],
-    $_POST['date_prod'],
-    $_POST['categorie_prod'],
-    $status_prod,
-    $image_prod
-);
+          if ($count == 0) {
+              echo "<script>alert('L\'ID n\'existe pas dans la base de données.');</script>";
+              // Rediriger après l'alerte pour empêcher la modification avec un ID erroné
+              header('Location: /update_produit.php');  // Assurez-vous que ce fichier existe à la racine du serveur
+              exit();
+              exit();
+          } else {
+              // L'ID existe, procédez aux actions nécessaires
+              echo "<script>alert('L\'ID existe. Vous pouvez continuer.');</script>";
+          }
+      } catch (PDOException $e) {
+          echo "Erreur lors de la vérification : " . htmlspecialchars($e->getMessage());
+      }
+  }
 
-  $produitC->updateProduit($id_prod, $produit);
+  // Vérifiez si l'ID a été transmis via POST
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      if (isset($_POST['id_prod']) || isset($_POST['id'])) {
+          $id_prod = $_POST['id_prod'] ?? $_POST['id'];
+          // Vérifiez si l'ID existe dans la base de données
+          $produit = $produitC->getProduitById($id_prod, $conn);
+          if (!$produit) {
+              $error = "Product ID not found.";
+          }
+      }
+  }
+  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nom_prod'])) {
+  // Validation des champs
+  $status_prod = isset($_POST['status_prod']) ? $_POST['status_prod'] : 'available'; // Valeur par défaut : "available"
+  $image_prod = !empty($_FILES['image_prod']['name']) ? $_FILES['image_prod']['name'] : $produitExistant['image_prod'] ?? '';
 
-  // Redirection après mise à jour
-  header('Location: afficher_produit.php');
-  exit;
-}
+  // Instanciation de l'objet Produits
+  $produit = new Produits(
+      $id_prod,
+      $_POST['nom_prod'],
+      $_POST['description_prod'],
+      (float) $_POST['prix_prod'],
+      (int) $_POST['stock_prod'],
+      $_POST['date_prod'],
+      $_POST['categorie_prod'],
+      $status_prod,
+      $image_prod
+  );
+
+    $produitC->updateProduit($id_prod, $produit);
+
+    // Redirection après mise à jour
+    header('Location: afficher_produit.php');
+    exit;
+  }}else{
+    echo'id missing';
+  }
+
 
 
 ?>
@@ -296,59 +298,80 @@ $produit = new Produits(
   </header><!-- End Header -->
 
   <!-- ======= Sidebar ======= -->
-  <aside id="sidebar" class="sidebar">
+<aside id="sidebar" class="sidebar">
 
-    <ul class="sidebar-nav" id="sidebar-nav">
+<ul class="sidebar-nav" id="sidebar-nav">
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="index.html">
-          <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="index.html">
+      <i class="bi bi-grid"></i>
+      <span>Dashboard</span>
+    </a>
+  </li><!-- End Dashboard Nav -->
+
+  <li class="nav-item">
+    <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+      <i class="bi bi-journal-text"></i><span>Add Product/Category</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="ajouter_produit.php">
+          <i class="bi bi-circle"></i><span>Add Product</span>
         </a>
-      </li><!-- End Dashboard Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link " data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>add product/category </span><i class="bi bi-chevron-down ms-auto"></i>
+      </li>
+      <li>
+        <a href="ajouter_cat.php">
+          <i class="bi bi-circle"></i><span>Add Category</span>
         </a>
-        <ul id="forms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="ajouter_produit.php" class="active">
-              <i class="bi bi-circle"></i><span>add product/category</span>
-            </a>
-          </li>
-        </ul>
+      </li>
+    </ul>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link " data-bs-target="#update-nav" data-bs-toggle="collapse" href="#">
+      <i class="bi bi-journal-text"></i><span>Update</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="update-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="update_produit.php" class="active">
+          <i class="bi bi-circle"></i><span>Update Product</span>
+        </a>
+      </li>
+      <li>
+        <a href="update_cat.php">
+          <i class="bi bi-circle"></i><span>Update Category</span>
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link " data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>update  </span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="forms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="update_produit.php" class="active">
-              <i class="bi bi-circle"></i><span>update product</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Forms Nav -->
+    <a class="nav-link" href="stat.php">
+        <i class="bi bi-bar-chart"></i><span>Statistics</span>
+    </a>
+</li><!-- End Statistics Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-layout-text-window-reverse"></i><span>products/categories list</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="afficher_produit.php">
-              <i class="bi bi-circle"></i><span>products table</span>
-            </a>
-          </li>
-  
-        </ul>
-      </li><!-- End Tables Nav -->
     </ul>
-   
+  </li><!-- End Update Nav -->
 
-  </aside><!-- End Sidebar-->
+  <li class="nav-item">
+    <a class="nav-link " data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+      <i class="bi bi-layout-text-window-reverse"></i><span>Products and Categories List</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="tables-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="afficher_produit.php" class="active">
+          <i class="bi bi-circle"></i><span>Products List</span>
+        </a>
+      </li>
+      <li>
+        <a href="afficher_cat.php">
+          <i class="bi bi-circle"></i><span>Categories List</span>
+        </a>
+      </li>
+    </ul>
+  </li><!-- End Tables Nav -->
+
+</ul>
+
+</aside><!-- End Sidebar -->
 
   <main id="main" class="main">
 
@@ -383,7 +406,7 @@ $produit = new Produits(
     </div><!-- End Page Title -->
 
  
-    <!--formulaiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiirrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrre-->
+    <!--formulaiiiiiiiiiiiiiiiiiiiiiiiiiiiiiirrrrrrrrrrrrrrrrrrrrrrrrrrre-->
     <form id="ProductForm" action="" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="id_prod" value="<?= htmlspecialchars($produit['id_prod'] ?? '') ?>">
 

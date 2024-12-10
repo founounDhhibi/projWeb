@@ -1,7 +1,19 @@
 <?php
 include '../../controller/categorieC.php'; // Remplacer le chemin par le bon contrôleur de catégories
 $categorieC = new CategorieC(); // Créer une instance du contrôleur des catégories
-$list = $categorieC->listeCategories(); // Appeler la méthode qui récupère la liste des catégories
+
+// Vérification de la page actuelle
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Page actuelle
+$limit = 5; // Nombre d'éléments par page
+$start = ($page - 1) * $limit; // Calcul de l'élément de départ pour la pagination
+
+// Appel de la méthode de récupération des catégories avec pagination
+$list = $categorieC->listeCategoriesPaginated($start, $limit);
+
+// Appel de la méthode qui récupère le nombre total de catégories
+$totalItems = $categorieC->countCategories();
+
+$totalPages = ceil($totalItems / $limit);
 ?>
 
 
@@ -269,69 +281,86 @@ $list = $categorieC->listeCategories(); // Appeler la méthode qui récupère la
   </header><!-- End Header -->
 
   <!-- ======= Sidebar ======= -->
-  <aside id="sidebar" class="sidebar">
+<aside id="sidebar" class="sidebar">
 
-    <ul class="sidebar-nav" id="sidebar-nav">
+<ul class="sidebar-nav" id="sidebar-nav">
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="index.html">
-          <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="index.html">
+      <i class="bi bi-grid"></i>
+      <span>Dashboard</span>
+    </a>
+  </li><!-- End Dashboard Nav -->
+
+  <li class="nav-item">
+    <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+      <i class="bi bi-journal-text"></i><span>Add Product/Category</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="ajouter_produit.php">
+          <i class="bi bi-circle"></i><span>Add Product</span>
         </a>
-      </li><!-- End Dashboard Nav -->
-      
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>add product/category</span><i class="bi bi-chevron-down ms-auto"></i>
+      </li>
+      <li>
+        <a href="ajouter_cat.php">
+          <i class="bi bi-circle"></i><span>Add Category</span>
         </a>
-        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="ajouter_produit.php">
-              <i class="bi bi-circle"></i><span>add product</span>
-            </a>
-          </li>
-   
-          
-        </ul>
+      </li>
+    </ul>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link " data-bs-target="#update-nav" data-bs-toggle="collapse" href="#">
+      <i class="bi bi-journal-text"></i><span>Update</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="update-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="update_produit.php" class="active">
+          <i class="bi bi-circle"></i><span>Update Product</span>
+        </a>
+      </li>
+      <li>
+        <a href="update_cat.php">
+          <i class="bi bi-circle"></i><span>Update Category</span>
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link " data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>update  </span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="forms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="update_produit.php" class="active">
-              <i class="bi bi-circle"></i><span>update product</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Forms Nav -->
+    <a class="nav-link" href="stat.php">
+        <i class="bi bi-bar-chart"></i><span>Statistics</span>
+    </a>
+</li><!-- End Statistics Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link " data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-layout-text-window-reverse"></i><span>products and categories list</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="tables-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="ajouter_produit.php" class="active">
-              <i class="bi bi-circle"></i><span>products list</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Tables Nav -->
-
-      
-      
-
-      
     </ul>
+  </li><!-- End Update Nav -->
 
-  </aside><!-- End Sidebar-->
+  <li class="nav-item">
+    <a class="nav-link " data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+      <i class="bi bi-layout-text-window-reverse"></i><span>Products and Categories List</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="tables-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="afficher_produit.php" class="active">
+          <i class="bi bi-circle"></i><span>Products List</span>
+        </a>
+      </li>
+      <li>
+        <a href="afficher_cat.php">
+          <i class="bi bi-circle"></i><span>Categories List</span>
+        </a>
+      </li>
+    </ul>
+  </li><!-- End Tables Nav -->
+
+</ul>
+
+</aside><!-- End Sidebar -->
+
 
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>General Tables</h1>
+      <h1>category Table</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
@@ -344,7 +373,7 @@ $list = $categorieC->listeCategories(); // Appeler la méthode qui récupère la
 <section class="section">
     <div class="row">
         <div class="col-lg-6">
-            <h5 class="card-title">Categories Table</h5>
+           
 
             <!-- Default Table -->
             <table class="table">
@@ -374,7 +403,8 @@ $list = $categorieC->listeCategories(); // Appeler la méthode qui récupère la
                             <td>
                                 <form method="POST" action="delete_cat.php">
                                     <input type="hidden" value="<?= htmlspecialchars($categorie['id_categorie']); ?>" name="id_categorie">
-                                    <input type="submit" class="btn btn-danger" name="delete" value="Delete">
+                                    <input type="submit" class="btn btn-danger" name="delete" value="Delete" onclick="return confirm('Do you really want to delete?')">
+
                                 </form>
                             </td>
                         </tr>
@@ -395,6 +425,27 @@ $list = $categorieC->listeCategories(); // Appeler la méthode qui récupère la
         </div>
       </div>
     </section>
+    <nav>
+    <ul class="pagination">
+        <!-- Lien vers la page précédente, s'il y en a une -->
+        <?php if ($page > 1): ?>
+            <li class="page-item"><a class="page-link" href="?page=<?= $page - 1 ?>">Previous</a></li>
+        <?php endif; ?>
+
+        <!-- Affichage des numéros de pages -->
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+            </li>
+        <?php endfor; ?>
+
+        <!-- Lien vers la page suivante, s'il y en a une -->
+        <?php if ($page < $totalPages): ?>
+            <li class="page-item"><a class="page-link" href="?page=<?= $page + 1 ?>">Next</a></li>
+        <?php endif; ?>
+    </ul>
+</nav>
+
 
   </main><!-- End #main -->
 
@@ -422,6 +473,13 @@ $list = $categorieC->listeCategories(); // Appeler la méthode qui récupère la
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+  <!--
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('table').dataTable()
+    });
+    </script>
+                  -->
 
 </body>
 

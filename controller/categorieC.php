@@ -101,5 +101,31 @@ class CategorieC
             die('Error: ' . $e->getMessage());
         }
     }
+    public function listeCategoriesPaginated($start, $limit) {
+        $sql = "SELECT * FROM categorie LIMIT :start, :limit";  
+        $db = getConnexion();
+        try {
+            $query = $db->prepare($sql);
+            $query->bindValue(':start', (int)$start, PDO::PARAM_INT);
+            $query->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            die("Error: " . $e->getMessage());
+        }
+    }
+    
+    public function countCategories() {
+        $sql = "SELECT COUNT(*) as total FROM categorie";  
+        $db = getConnexion();
+        try {
+            $query = $db->query($sql);
+            $result = $query->fetch();
+            return $result['total'];
+        } catch (PDOException $e) {
+            die("Error: " . $e->getMessage());
+        }
+    }
+    
 }
 ?>

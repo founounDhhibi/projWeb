@@ -2,26 +2,27 @@
 include '../../controller/produitC.php';
 $travelOfferC = new ProduitC();
 $list = $travelOfferC->listeProduits();
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 5; // Number of items per page
+$start = ($page - 1) * $limit;
 
+$travelOfferC = new ProduitC();
+$list = $travelOfferC->listeProduitsPaginated($start, $limit);
+$totalItems = $travelOfferC->countProduits();
+$totalPages = ceil($totalItems / $limit);
 
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
   <title>show products and categories</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
-
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -32,8 +33,6 @@ $list = $travelOfferC->listeProduits();
   <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
   <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-
-
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
 
@@ -82,7 +81,6 @@ $list = $travelOfferC->listeProduits();
             <li>
               <hr class="dropdown-divider">
             </li>
-
             <li class="notification-item">
               <i class="bi bi-exclamation-circle text-warning"></i>
               <div>
@@ -91,11 +89,9 @@ $list = $travelOfferC->listeProduits();
                 <p>30 min. ago</p>
               </div>
             </li>
-
             <li>
               <hr class="dropdown-divider">
             </li>
-
             <li class="notification-item">
               <i class="bi bi-x-circle text-danger"></i>
               <div>
@@ -104,11 +100,9 @@ $list = $travelOfferC->listeProduits();
                 <p>1 hr. ago</p>
               </div>
             </li>
-
             <li>
               <hr class="dropdown-divider">
             </li>
-
             <li class="notification-item">
               <i class="bi bi-check-circle text-success"></i>
               <div>
@@ -117,11 +111,9 @@ $list = $travelOfferC->listeProduits();
                 <p>2 hrs. ago</p>
               </div>
             </li>
-
             <li>
               <hr class="dropdown-divider">
             </li>
-
             <li class="notification-item">
               <i class="bi bi-info-circle text-primary"></i>
               <div>
@@ -130,25 +122,19 @@ $list = $travelOfferC->listeProduits();
                 <p>4 hrs. ago</p>
               </div>
             </li>
-
             <li>
               <hr class="dropdown-divider">
             </li>
             <li class="dropdown-footer">
               <a href="#">Show all notifications</a>
             </li>
-
           </ul><!-- End Notification Dropdown Items -->
-
         </li><!-- End Notification Nav -->
-
         <li class="nav-item dropdown">
-
           <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
             <i class="bi bi-chat-left-text"></i>
             <span class="badge bg-success badge-number">3</span>
           </a><!-- End Messages Icon -->
-
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
             <li class="dropdown-header">
               You have 3 new messages
@@ -157,7 +143,6 @@ $list = $travelOfferC->listeProduits();
             <li>
               <hr class="dropdown-divider">
             </li>
-
             <li class="message-item">
               <a href="#">
                 <img src="assets/img/messages-1.jpg" alt="" class="rounded-circle">
@@ -171,7 +156,6 @@ $list = $travelOfferC->listeProduits();
             <li>
               <hr class="dropdown-divider">
             </li>
-
             <li class="message-item">
               <a href="#">
                 <img src="assets/img/messages-2.jpg" alt="" class="rounded-circle">
@@ -185,7 +169,6 @@ $list = $travelOfferC->listeProduits();
             <li>
               <hr class="dropdown-divider">
             </li>
-
             <li class="message-item">
               <a href="#">
                 <img src="assets/img/messages-3.jpg" alt="" class="rounded-circle">
@@ -199,22 +182,16 @@ $list = $travelOfferC->listeProduits();
             <li>
               <hr class="dropdown-divider">
             </li>
-
             <li class="dropdown-footer">
               <a href="#">Show all messages</a>
             </li>
-
           </ul><!-- End Messages Dropdown Items -->
-
         </li><!-- End Messages Nav -->
-
         <li class="nav-item dropdown pe-3">
-
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
             <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
           </a><!-- End Profile Iamge Icon -->
-
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
               <h6>Kevin Anderson</h6>
@@ -233,7 +210,6 @@ $list = $travelOfferC->listeProduits();
             <li>
               <hr class="dropdown-divider">
             </li>
-
             <li>
               <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
                 <i class="bi bi-gear"></i>
@@ -243,7 +219,6 @@ $list = $travelOfferC->listeProduits();
             <li>
               <hr class="dropdown-divider">
             </li>
-
             <li>
               <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
                 <i class="bi bi-question-circle"></i>
@@ -253,86 +228,88 @@ $list = $travelOfferC->listeProduits();
             <li>
               <hr class="dropdown-divider">
             </li>
-
             <li>
               <a class="dropdown-item d-flex align-items-center" href="#">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
             </li>
-
           </ul><!-- End Profile Dropdown Items -->
         </li><!-- End Profile Nav -->
-
       </ul>
     </nav><!-- End Icons Navigation -->
-
   </header><!-- End Header -->
-
-  <!-- ======= Sidebar ======= -->
-  <aside id="sidebar" class="sidebar">
-
-    <ul class="sidebar-nav" id="sidebar-nav">
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="index.html">
-          <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
+ <!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+<ul class="sidebar-nav" id="sidebar-nav">
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="index.html">
+      <i class="bi bi-grid"></i>
+      <span>Dashboard</span>
+    </a>
+  </li><!-- End Dashboard Nav -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+      <i class="bi bi-journal-text"></i><span>Add Product/Category</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="ajouter_produit.php">
+          <i class="bi bi-circle"></i><span>Add Product</span>
         </a>
-      </li><!-- End Dashboard Nav -->
-      
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>add product/category</span><i class="bi bi-chevron-down ms-auto"></i>
+      </li>
+      <li>
+        <a href="ajouter_cat.php">
+          <i class="bi bi-circle"></i><span>Add Category</span>
         </a>
-        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="ajouter_produit.php">
-              <i class="bi bi-circle"></i><span>add product</span>
-            </a>
-          </li>
-   
-          
-        </ul>
+      </li>
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link " data-bs-target="#update-nav" data-bs-toggle="collapse" href="#">
+      <i class="bi bi-journal-text"></i><span>Update</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="update-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="update_produit.php" class="active">
+          <i class="bi bi-circle"></i><span>Update Product</span>
+        </a>
+      </li>
+      <li>
+        <a href="update_cat.php">
+          <i class="bi bi-circle"></i><span>Update Category</span>
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link " data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>update  </span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="forms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="update_produit.php" class="active">
-              <i class="bi bi-circle"></i><span>update product</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Forms Nav -->
+    <a class="nav-link" href="stat.php">
+        <i class="bi bi-bar-chart"></i><span>Statistics</span>
+    </a>
+</li><!-- End Statistics Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link " data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-layout-text-window-reverse"></i><span>products and categories list</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="tables-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="ajouter_produit.php" class="active">
-              <i class="bi bi-circle"></i><span>products list</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Tables Nav -->
-
-      
-      
-
-      
     </ul>
-
-  </aside><!-- End Sidebar-->
-
+  </li><!-- End Update Nav -->
+  <li class="nav-item">
+    <a class="nav-link " data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+      <i class="bi bi-layout-text-window-reverse"></i><span>Products and Categories List</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="tables-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="afficher_produit.php" class="active">
+          <i class="bi bi-circle"></i><span>Products List</span>
+        </a>
+      </li>
+      <li>
+        <a href="afficher_cat.php">
+          <i class="bi bi-circle"></i><span>Categories List</span>
+        </a>
+      </li>
+    </ul>
+  </li><!-- End Tables Nav -->
+</ul>
+</aside><!-- End Sidebar -->
   <main id="main" class="main">
-
     <div class="pagetitle">
-      <h1>General Tables</h1>
+      <h1>product Table</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
@@ -341,15 +318,12 @@ $list = $travelOfferC->listeProduits();
         </ol>
       </nav>
     </div><!-- End Page Title -->
+    
 <!--formulaiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiirrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrre-->
     <section class="section">
       <div class="row">
-        <div class="col-lg-6">
-
-          
-            
-              <h5 class="card-title">products Table</h5>
-
+        <div class="col-lg-6">           
+              
               <!-- Default Table -->
               <table class="table">
                 <thead>
@@ -367,9 +341,7 @@ $list = $travelOfferC->listeProduits();
                     <th scope="col"> delete</th>
                   </tr>
                 </thead>
-                <tbody>
- 
-                 
+                <tbody>  
                 <?php
 foreach ($list as $produit) {
     ?> 
@@ -394,7 +366,8 @@ foreach ($list as $produit) {
         <td>
     <form method="POST" action="delete_produit.php">
         <input type="hidden" value="<?php echo $produit['id_prod']; ?>" name="id_prod">
-        <input type="submit" class="btn btn-danger" name="delete" value="Supprimer">
+        <input type="submit" class="btn btn-danger" name="delete" value="delete" onclick="return confirm('do you really want to delete this element ?')">
+
     </form>
 </td>
     </tr>
@@ -402,57 +375,32 @@ foreach ($list as $produit) {
 }
 ?>
 
-      
-              <h5 class="card-title">category table</h5>
-              <p>Add <code>.table-bordered</code> for borders on all sides of the table and cells.</p>
-              <!-- Bordered Table -->
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">description</th>
-                 
-                  </tr>
-                </thead>
-                <tbody>
- 
-                 
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Ashleigh Langosh</td>
-                    <td>Finance</td>
-                  </tr>
-                 
-                  
-                </tbody>
-              </table>
-              <!-- End Bordered Table -->
-
-             
-
-            
 
 
         </div>
       </div>
     </section>
+    <nav>
+    <ul class="pagination">
+        <?php if ($page > 1): ?>
+            <li class="page-item"><a class="page-link" href="?page=<?= $page - 1 ?>">Previous</a></li>
+        <?php endif; ?>
 
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+            </li>
+        <?php endfor; ?>
+
+        <?php if ($page < $totalPages): ?>
+            <li class="page-item"><a class="page-link" href="?page=<?= $page + 1 ?>">Next</a></li>
+        <?php endif; ?>
+    </ul>
+</nav>
+  
   </main><!-- End #main -->
-
   <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
-    <div class="copyright">
-      &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
-    </div>
-    <div class="credits">
-    
-      Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-    </div>
-  </footer><!-- End Footer -->
-
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
   <!-- Vendor JS Files -->
   <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -461,10 +409,7 @@ foreach ($list as $produit) {
   <script src="assets/vendor/quill/quill.js"></script>
   <script src="assets/vendor/tinymce/tinymce.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
-
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
-
 </body>
-
 </html>
